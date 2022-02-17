@@ -49,4 +49,9 @@ export class UsersRepository {
         user.referral_count++;
         return user.save();
     }
+
+    async search(referral_code: string): Promise<User[]>{
+        return await this.userModel.find()
+        .or([{ "referred_by": referral_code }, { referral_code }]);
+    }
 }

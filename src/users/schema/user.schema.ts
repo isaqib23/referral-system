@@ -20,6 +20,9 @@ export class User {
 
     @Prop()
     referral_count: number
+
+    @Prop()
+    referred_by: string
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

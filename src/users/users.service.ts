@@ -19,6 +19,7 @@ export class UsersService {
         const referral_code = shortid.generate();
         const { name, email, password, code } = userDto;
         const referral_count = 0;
+        const referred_by = (code) ? code : null;
 
         if(code){
             const checkCode = await this.getUserByCode(code);
@@ -29,7 +30,7 @@ export class UsersService {
             if(checkCode.referral_count >= parseInt(process.env.MAX_REFERRAL_LEVEL)) throw new NotFoundException('Maxmimum allowed referral level reached. Try Again!');
         }
 
-        const userObject: User = { name, email, password, referral_code, referral_count}
+        const userObject: User = { name, email, password, referral_code, referral_count, referred_by}
         await this.userRespository.createUser(userObject);
         
         // update user referral count if signup using referral code
@@ -66,5 +67,14 @@ export class UsersService {
 
     private async updateUserReferral(referral_code: string): Promise<void>{
         await this.userRespository.updateUser(referral_code);
+    }
+
+    async search(email: string): Promise<User[]>{
+        const user = await this.userRespository.findByEmail(email);
+        if(user){
+            return this.userRespository.search(user.referral_code);
+        }
+
+        return null;
     }
 }

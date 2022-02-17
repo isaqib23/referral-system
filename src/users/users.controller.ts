@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, Query, Req, UseGuards, UsePipes, ValidationPipe } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Query, Req, UseGuards, UsePipes, ValidationPipe } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { CreateUserDto } from './create-user.dto';
 import { LoginUserDto } from './login-user.dto';
@@ -32,5 +32,10 @@ export class UsersController {
     @UseGuards(AuthGuard())
     index(@Req() req): Promise<User>{
         return req.user;
+    }
+
+    @Post("/search")
+    search(@Body("email") email): Promise<User[]>{
+        return this.userService.search(email);
     }
 }
