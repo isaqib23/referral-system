@@ -1,8 +1,7 @@
 import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { MAX_REFERRAL_LEVEL } from 'src/app.properties';
+import { JWTPayload } from 'src/utils/jwt-payload';
 import { CreateUserDto } from './create-user.dto';
-import { JWTPayload } from './jwt-payload';
 import { LoginUserDto } from './login-user.dto';
 import { User } from './schema/user.schema';
 import { UsersRepository } from './users.repository';
@@ -27,7 +26,7 @@ export class UsersService {
             if(!checkCode) throw new NotFoundException('Invalid referral code. Try Again!');
             
             // Check maximum referral
-            if(checkCode.referral_count >= MAX_REFERRAL_LEVEL) throw new NotFoundException('Maxmimum allowed referral level reached. Try Again!');
+            if(checkCode.referral_count >= parseInt(process.env.MAX_REFERRAL_LEVEL)) throw new NotFoundException('Maxmimum allowed referral level reached. Try Again!');
         }
 
         const userObject: User = { name, email, password, referral_code, referral_count}
